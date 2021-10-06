@@ -1,6 +1,10 @@
 pipeline {
   agent any
 
+  environment {
+    TOKEN = 'sonarToken'
+  }
+
   stages {
 
     stage('Build Artifact - Maven') {
