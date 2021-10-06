@@ -39,7 +39,14 @@ pipeline {
 
     stage('SonarQube - SAST') {
       steps {
-        sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-tty.eastus.cloudapp.azure.com:9000 -Dsonar.login=${TOKEN}"
+        withSonarQubeEnv('SonarQube') {
+          sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-tty.eastus.cloudapp.azure.com:9000 -Dsonar.login=${TOKEN}"
+        }
+        timeout(time: 2, unit: 'MINUTES') {
+          script {
+            waitForQualityGate abortPipeline: true
+          }
+        }
       }
     }
 
